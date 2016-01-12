@@ -207,6 +207,22 @@ public class SeaBotHardware extends OpMode
             v_servo_climber = null;
         }
 
+        double l_linear_actuator_position = 0.0;
+
+        try
+        {
+            v_servo_linear_actuator = hardwareMap.servo.get ("servo_linear_actuator");
+            v_servo_linear_actuator.setPosition(l_linear_actuator_position);
+        }
+        catch (Exception p_exeception)
+        {
+            m_warning_message("servo_linear_actuator");
+            DbgLog.msg (p_exeception.getLocalizedMessage ());
+
+            v_servo_linear_actuator = null;
+        }
+
+
         //
         // setup hardware for front hook servo
         //
@@ -409,6 +425,63 @@ public class SeaBotHardware extends OpMode
         return l_scale;
 
     } // scale_motor_power
+
+    //--------------------------------------------------------------------------
+    //
+    // scale_motor_power
+    //
+    /**
+     * Scale the joystick input using a nonlinear algorithm.
+     */
+    float scale_arm_power (float p_power)
+    {
+        //
+        // Assume no scaling.
+        //
+        float l_scale = 0.0f;
+
+        //
+        // Ensure the values are legal.
+        //
+        float l_power = Range.clip (p_power, -1, 1);
+
+        float[] l_array =
+                { 0.00f, 0.05f, 0.09f, 0.10f, 0.12f
+                        , 0.15f, 0.18f, 0.24f, 0.30f, 0.36f
+                        , 0.43f, 0.50f, 0.60f, 0.72f, 0.85f
+                        , 1.00f, 1.00f
+                };
+
+        //
+        // Get the corresponding index for the specified argument/parameter.
+        //
+        int l_index = (int)(l_power * 16.0);
+        if (l_index < 0)
+        {
+            l_index = -l_index;
+        }
+        else if (l_index > 16)
+        {
+            l_index = 16;
+        }
+
+
+        if (l_power < 0)
+        {
+            l_scale = -l_array[l_index];
+        }
+        else
+        {
+            l_scale = l_array[l_index];
+        }
+
+        if (l_scale > 0.5)
+        {
+            l_scale = 0.5f;
+        }
+        return l_scale;
+
+    }
 
     //--------------------------------------------------------------------------
     //
@@ -1013,7 +1086,7 @@ public class SeaBotHardware extends OpMode
         //
         // Has the right encoder reached zero?
         //
-        if (a_right_encoder_count () == 0)
+        if (a_right_encoder_count() == 0)
         {
             //
             // Set the status to a positive indication.
@@ -1045,7 +1118,7 @@ public class SeaBotHardware extends OpMode
         //
         // Have the encoders reached zero?
         //
-        if (has_left_drive_encoder_reset () && has_right_drive_encoder_reset ())
+        if (has_left_drive_encoder_reset() && has_right_drive_encoder_reset ())
         {
             //
             // Set the status to a positive indication.
@@ -1115,7 +1188,47 @@ public class SeaBotHardware extends OpMode
         return l_return;
 
     } // a_hand_position
+//--------------------------------------------------------------------------
+    //
+    // a_hand_position
+    //
+    /**
+     * Access the climber position.
+     */
+    double a_linear_actuator_position ()
+    {
+        double l_return = 0.0;
 
+        if (v_servo_linear_actuator != null)
+        {
+            l_return = v_servo_linear_actuator.getPosition ();
+        }
+
+        return l_return;
+
+    }
+
+    void m_servo_position (double p_position)
+    {
+        //
+        // Ensure the specific value is legal.
+        //
+        double l_position = Range.clip
+                ( p_position
+                        , Servo.MIN_POSITION
+                        , Servo.MAX_POSITION
+                );
+
+        //
+        // Set the value.  The right hand value must be opposite of the left
+        // value.
+        //
+        if (v_servo_climber != null)
+        {
+            v_servo_climber.setPosition (l_position);
+        }
+
+    }
     //--------------------------------------------------------------------------
     //
     // m_hand_position
@@ -1142,13 +1255,34 @@ public class SeaBotHardware extends OpMode
         {
             v_servo_climber.setPosition (l_position);
         }
-        if (v_servo_front_hook != null)
-        {
-            v_servo_front_hook.setPosition(1.0 - l_position);
-        }
+
+
 
     } // m_hand_position
 
+    void m_linear_actuator_position (double p_position)
+    {
+        //
+        // Ensure the specific value is legal.
+        //
+        double l_position = Range.clip
+                ( p_position
+                        , Servo.MIN_POSITION
+                        , Servo.MAX_POSITION
+                );
+
+        //
+        // Set the value.  The right hand value must be opposite of the left
+        // value.
+        //
+        if (v_servo_linear_actuator != null)
+        {
+            v_servo_linear_actuator.setPosition (l_position);
+        }
+
+
+
+    } // m_hand_position
     //--------------------------------------------------------------------------
     //
     // open_hand
@@ -1260,6 +1394,15 @@ public class SeaBotHardware extends OpMode
      * Manage the aspects of the climber servo.
      */
     private Servo v_servo_climber;
+
+    //--------------------------------------------------------------------------
+    //
+    // v_servo_linear_actuator
+    //
+    /**
+     * Manage the aspects of the climber servo.
+     */
+    private Servo v_servo_linear_actuator;
 
     //--------------------------------------------------------------------------
     //

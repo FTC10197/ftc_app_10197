@@ -115,6 +115,10 @@ public class SeaBotTelemetry extends SeaBotHardware
                 ( "06"
                         , "Touch pressed?: " + is_touch_sensor_pressed ()
                 );
+        telemetry.addData
+                ( "07"
+                        , "Linear Actuator Position:  " + a_linear_actuator_position ()
+                );
 
     } // update_telemetry
 
