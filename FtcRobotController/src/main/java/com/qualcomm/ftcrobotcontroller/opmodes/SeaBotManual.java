@@ -95,47 +95,32 @@ public class SeaBotManual extends SeaBotTelemetry
         {
             m_climber_position(a_climber_position () + 0.05);
             //move climber servo
-            telemetry.addData
-                    ( "05"
-                            , "Climber Drop Position: " + a_climber_position ()
-                    );
+            telemetry.addData( "************" , "x pressed: " + (a_climber_position () + 0.05));
+            telemetry.addData( "05" , "Climber Drop Position: " + a_climber_position ());
         }
-        else
-        {
-            m_climber_position(a_climber_position());
-            //don't move climber servo
-        }
-
-        if(gamepad2.b)
+        else if(gamepad2.b)
         {
             m_climber_position(a_climber_position () - 0.05);
             //move climber servo
         }
-        else
-        {
-            m_climber_position(a_climber_position ());
-            //don't move climber servo
-        }
+
+        //
+        // linear actuator
+        //
 
         if(gamepad2.y)
         {
-            m_linear_actuator_position (a_linear_actuator_position() + 0.05);
+            m_linear_actuator_position (0);
+            //move arm servo
+        }
+        else if(gamepad2.a)
+        {
+            m_linear_actuator_position(1);
             //move arm servo
         }
         else
         {
-            m_linear_actuator_position (a_linear_actuator_position() - 0);
-            //don't move arm servo
-        }
-
-        if(gamepad2.a)
-        {
-            m_linear_actuator_position(a_linear_actuator_position() - 0.05);
-            //move arm servo
-        }
-        else
-        {
-            m_linear_actuator_position(a_linear_actuator_position() - 0);
+            m_linear_actuator_position(0.5);
             //don't move arm servo
         }
 

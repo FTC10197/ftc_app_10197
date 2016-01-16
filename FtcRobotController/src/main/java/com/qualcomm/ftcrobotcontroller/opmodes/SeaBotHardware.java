@@ -207,11 +207,15 @@ public class SeaBotHardware extends OpMode
             v_servo_climber = null;
         }
 
-        double l_linear_actuator_position = 0.0;
+        //
+        // this is a continuous rotation servo so no need to set position to 0.5 to stopped position
+        //
+        double l_linear_actuator_position = 0.5;
 
         try
         {
             v_servo_linear_actuator = hardwareMap.servo.get ("servo_linear_actuator");
+            // this is a continuous rotation servo so no need to set position
             v_servo_linear_actuator.setPosition(l_linear_actuator_position);
         }
         catch (Exception p_exeception)
@@ -220,25 +224,6 @@ public class SeaBotHardware extends OpMode
             DbgLog.msg (p_exeception.getLocalizedMessage ());
 
             v_servo_linear_actuator = null;
-        }
-
-
-        //
-        // setup hardware for front hook servo
-        //
-        double l_front_hook_position = 0.0;
-
-        try
-        {
-            v_servo_front_hook = hardwareMap.servo.get ("servo_front_hook");
-            v_servo_front_hook.setPosition (l_front_hook_position);
-        }
-        catch (Exception p_exeception)
-        {
-            m_warning_message ("servo_front_hook");
-            DbgLog.msg (p_exeception.getLocalizedMessage ());
-
-            v_servo_front_hook = null;
         }
 
     } // init
@@ -1248,8 +1233,7 @@ public class SeaBotHardware extends OpMode
             );
 
         //
-        // Set the value.  The right hand value must be opposite of the left
-        // value.
+        // Set the value.
         //
         if (v_servo_climber != null)
         {
@@ -1262,7 +1246,7 @@ public class SeaBotHardware extends OpMode
 
     void m_linear_actuator_position (double p_position)
     {
-        //
+
         // Ensure the specific value is legal.
         //
         double l_position = Range.clip

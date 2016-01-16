@@ -139,8 +139,8 @@ public class SeaBotTelemetry extends SeaBotHardware
         telemetry.addData ("08", "GP1 Right Stick: " + -gamepad1.right_stick_y);
         telemetry.addData ("09", "GP2 Left Stick: " + -gamepad2.left_stick_y);
         telemetry.addData ("10", "GP2 Right Stick: " + -gamepad2.right_stick_y);
-        telemetry.addData ("11", "GP2 X: " + gamepad2.x);
-        telemetry.addData ("12", "GP2 Y: " + gamepad2.y);
+        telemetry.addData ("11", "GP2 X: " + gamepad2.x + ", B: " + gamepad2.b);
+        telemetry.addData ("12", "GP2 Y: " + gamepad2.y + ", A: " + gamepad2.a);
 
     } // update_gamepad_telemetry
 
